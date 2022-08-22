@@ -930,10 +930,9 @@
 (defn expmod [base exp m]
   (cond
     (= exp 0) 1
-    (even? exp)
-    (mod
-      (square (expmod base (/ exp 2) m))
-      m)
+    (even? exp) (mod
+                  (square (expmod base (/ exp 2) m))
+                  m)
     :else (mod
             (* base (expmod base (- exp 1) m))
             m)))
@@ -1011,4 +1010,115 @@
   (oz/view! line-plot)
   )
 
+
+; 1.25
+
+(defn fast-expt [b n]
+  (cond
+    (= n 0) 1
+    (even? n) (square (fast-expt b (/ n 2)))
+    :else (* b (fast-expt b (- n 1)))))
+
+(defn expmod:liza [base exp m]
+  (mod (fast-expt base exp) m))
+
+(comment
+  "Снизу представлены функции и функция time для опеределения,
+  какая из функций будет работать быстрее(а значит и эффективнее).
+  Но запустив функцию из этого задания, получил ошибку:
+
+  Execution error (ArithmeticException) at java.lang.Math/multiplyExact (Math.java:948).
+  long overflow
+
+  Посмотрев в реализацию алгоритма из задания, можно заметить,
+  что тут каждое число будет возводится в квадрат. После чего
+  снова возводится в квадрат, и так пока не достигнет желаемого
+  результата. Если мы функцию square запишем так:"
+  (defn square-2 [x]
+    (println x)
+    (* x x))
+  "... то мы можем посмотреть какие числа возводит в квадрат
+  предложенный метод. Это числа 3, 27, 729, 1594323, 2541865828329.
+  Оригинальный же метод считает в свою очередь такие числа:
+  3, 27, 40, 30, 52. Понятное дело считать квадрат для 52 проще,
+  чем для 2541865828329. Поэтому Лиза П. Хакер зря жалуется. Она
+  не права. Для проверки простых чисел эту функцию использовать
+  точно нельзя, потому что очень неэффективная функция."
+
+  (time (expmod 3 53 53))
+  (Math/pow 3 14)
+  (time (expmod:liza 3 53 53)))
+
+; 1.26
+(comment
+  "Проблема кода Хьюго в том, что кваждый раз, когда получается
+  чётная степень в expmod, то обсчёт идёт не 1 раз, а два.
+  Допустим у нас четная степень, а функция (expmod base 2n m)
+  требует k шагов. Порядок действий такой:"
+
+  "  (square (expmod base 2n m)) ->
+     (square (square (expmod base n m)))
+
+     Кол-во шагов: k+1 -> (k+1)+1"
+
+  "Для функции Хьюго это будет выглядеть так:"
+
+  "  (* (expmod base 2n m) (expmod base 2n m)) ->
+     (* (* (expmod base n m)
+           (expmod base n m))
+        (* (expmod base n m)
+           (expmod base n m)))
+
+     Кол-во шагов: 2k -> 4k"
+
+  "Сложность первого O(log n).
+  Второго O(log 2^n) => O(n log2) => O(log n)"
+  )
+
+; 1.27
+
+(defn carmichael-fn [n]
+  (defn iter [a]
+    (cond
+      (= a 1) true
+      (not (try-it a n)) false
+      :else (iter (dec a))))
+  (iter (dec n)))
+
+(comment
+  (let [carmichaels-nums [561, 1105, 1729, 2465, 2821, 6601]]
+    (for [num carmichaels-nums]
+      (carmichael-fn num))
+    )
+  ; => (true true true true true true)
+  )
+
+; 1.28
+(defn square-checker [x m]
+  (if
+    (and (not (or (= x 1) (= x (- m 1))))
+         (= (mod (* x x) m) 1))
+    0
+    (mod (* x x) m)))
+
+(defn miller-expmod [base exp m]
+  (cond
+    (= exp 0) 1
+    (even? exp) (square-checker (miller-expmod base (/ exp 2) m) m)
+    :else (mod (* base (miller-expmod base (- exp 1) m))
+               m)))
+
+(defn miller-rabin-fn [n]
+  (defn mil-rab-try-it [a]
+    (= (miller-expmod a (- n 1) n) 1))
+  (mil-rab-try-it (+ 2 (rand-int (- n 2)))))
+
+(comment
+  (let [prime-numbers '(1009 1013 1019 10007 10009 10037 100003
+                         100019 100043 1000003 1000033 1000037
+                         561 562 1105 1729 2465 2821 6601)]
+    (for [num prime-numbers]
+      {:num num
+       :prime? (miller-rabin-fn num)}))
+  )
 
