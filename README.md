@@ -1,32 +1,30 @@
 # sicp-book-exercises
 
-FIXME: description
+Project where I store my exercises solutions of 
+SICP[https://newstar.rinet.ru/~goga/sicp/sicp.pdf] book.
+This repository uses Clojure as main programming
+language instead of Schema, that described in the book.
+Sometimes different functions might have different names
+but in comment section under each task I leave an
+explanation, what I changed, why I use this instead of
+that and what I found useful outside the book.
 
-## Installation
+## Check solutions
 
-Download from http://example.com/FIXME.
+You need to use REPL for starting the project and evaluate
+function in comment section of every task described in this
+repo.
 
-## Usage
+I used Intellij IDEA Repl (Cursive), you can use whatever
+you want
 
-FIXME: explanation
 
-    $ java -jar sicp-book-exercises-0.1.0-standalone.jar [args]
+## Graphs
 
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
+For some tasks I wanted to show the result using graphs or
+another diagram. For this I used oz[https://github.com/metasoarous/oz]
+library. In the comment section I give you commands for
+starting this if you need it.
 
 ## License
 
