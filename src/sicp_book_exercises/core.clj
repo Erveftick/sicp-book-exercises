@@ -1118,7 +1118,87 @@
                          100019 100043 1000003 1000033 1000037
                          561 562 1105 1729 2465 2821 6601)]
     (for [num prime-numbers]
-      {:num num
+      {:num    num
        :prime? (miller-rabin-fn num)}))
   )
 
+; 1.29
+
+(defn simpson-law [f a b n]
+  (let [h (/ (- b a) n)]
+    (* (/ h 3)
+       (reduce
+         +
+         (let [y-0 (f (+ a (* 0 h)))
+               y-n (f (+ a (* n h)))]
+           (conj
+             (for [i (range 1 n)]
+               (let [y-i (f (+ a (* i h)))]
+                 (if (even? i)
+                   (* 2 y-i)
+                   (* 4 y-i)
+                   )
+                 ))
+             y-0 y-n))))))
+
+(comment
+  (simpson-law cube 0 1 100)                                ; => 1/4
+  (simpson-law cube 0 1 1000)                               ; => 1/4
+  "Наша функция точнее"
+  )
+
+; 1.30
+
+(defn sum-- [term a next b]
+  (if (> a b)
+    0
+    (+ (term a)
+       (sum-- term (next a) next b))))
+
+(defn sum-1-30 [term a next b]
+  (defn sum-iter [a result]
+    (if (> a b)
+      result
+      (sum-iter (next a) (+ result (term a)))))
+  (sum-iter (term a) 0))
+
+(comment
+  (sum-- cube 1 inc 10)                                     ; => 3025
+  (sum-1-30 cube 1 inc 10)                                  ; => 3025
+  )
+
+; 1.31
+
+(defn product-recursive [term a next b]
+  (if (> a b)
+    1
+    (* (term a)
+       (product-recursive term (next a) next b))))
+
+(defn product-iterative [term a next b]
+  (defn prod-iter [a result]
+    (if (> a b)
+      result
+      (prod-iter (next a) (* result (term a)))))
+  (prod-iter (term a) 1))
+
+(defn factorial-1-31 [b]
+  (product-recursive identity 1 inc b))
+
+(defn plus-2 [x]
+  (+ 2 x))
+
+(defn pi-definer [precise]
+  (let [chislitel (* (square (product-recursive identity 4 plus-2 (dec precise))) 2 precise)
+        znemenatel (square (product-recursive identity 3 plus-2 precise))]
+    (double (* 4 (/ chislitel znemenatel)))))
+
+(comment
+  "Часть а:"
+  (product-recursive identity 1 inc b)
+  (factorial-1-31 10)
+  (pi-definer 20)
+
+  "Часть б"
+  (product-iterative identity 1 inc 10)
+  )
