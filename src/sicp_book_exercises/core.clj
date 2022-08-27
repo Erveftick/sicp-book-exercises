@@ -1195,10 +1195,57 @@
 
 (comment
   "Часть а:"
-  (product-recursive identity 1 inc b)
+  (product-recursive identity 1 inc 10)
   (factorial-1-31 10)
   (pi-definer 20)
 
   "Часть б"
   (product-iterative identity 1 inc 10)
+  )
+
+; 1.32
+
+(defn accumulate [combiner null-value term a next b]
+  (if (> a b)
+    null-value
+    (combiner (term a)
+              (accumulate combiner null-value term (next a) next b))))
+
+(defn accumulate-iterative [combiner null-value term a next b]
+  (defn accumulate-iter [a result]
+    (if (> a b)
+      result
+      (accumulate-iter (next a) (combiner result (term a)))))
+  (accumulate-iter (term a) null-value))
+
+(comment
+  "а:"
+  (sum-1-30 cube 1 inc 10)
+  (accumulate + 0 cube 1 inc 10)
+
+  (product-recursive identity 1 inc 10)
+  (accumulate * 1 identity 1 inc 10)
+
+  "б:"
+  (accumulate-iterative * 1 identity 1 inc 10)
+  )
+
+; 1.33
+
+(defn filtered-accumulate [combiner null-value term a next b filter-fn]
+  (let [term-value? (if (filter-fn a) (term a) null-value)]
+    (if (> a b)
+      null-value
+      (combiner term-value?
+                (filtered-accumulate combiner null-value term (next a) next b filter-fn)))))
+
+(defn hepler-1-33 [n a]
+  (and (< a n) (= 1 (gcd a n))))
+
+(comment
+  "a:"
+  (filtered-accumulate + 0 square 1 inc 5 prime?)
+
+  "б:"
+  (filtered-accumulate * 1 identity 1 inc 5 (partial hepler-1-33 7))
   )
