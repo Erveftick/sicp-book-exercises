@@ -37,7 +37,7 @@
   (/ (+ 5 4 (- 2 (- 3 (+ 6 4/5)))) (* 3 (- 6 2) (- 2 7))))
 
 ; 1.3
-(defn task1point3
+(defn task-1-3
   "Задание: Определите процедуру, которая принимает в качестве аргументов три числа и возвращает сумму
 квадратов двух бо́льших из них"
   [a b c]
@@ -47,10 +47,10 @@
     (+ (* max max) (* avrg avrg))))
 
 (comment
-  (task1point3 5 1 0))
+  (task-1-3 5 1 0))
 
 ; 1.4
-(defn aplusabsb
+(defn a-plus-abs-b
   "Задание: Заметим, что наша модель вычислений разрешает существование комбинаций, операторы кото-
 рых — составные выражения. С помощью этого наблюдения опишите, как работает следующая
 процедура:"
@@ -61,8 +61,8 @@
   (str "Ответ: Функция которая в зависимости от второго входящего параметра опеределяет,
        какая математическая операция будет выполнена. Если число положительно - сумма,
        иначе - отнимание. Такой себе макрос")
-  (aplusabsb 1 2)
-  (aplusabsb 3 -2))
+  (a-plus-abs-b 1 2)
+  (a-plus-abs-b 3 -2))
 
 
 ; 1.5
@@ -1239,7 +1239,7 @@
       (combiner term-value?
                 (filtered-accumulate combiner null-value term (next a) next b filter-fn)))))
 
-(defn hepler-1-33 [n a]
+(defn helper-1-33 [n a]
   (and (< a n) (= 1 (gcd a n))))
 
 (comment
@@ -1247,5 +1247,5 @@
   (filtered-accumulate + 0 square 1 inc 5 prime?)
 
   "б:"
-  (filtered-accumulate * 1 identity 1 inc 5 (partial hepler-1-33 7))
+  (filtered-accumulate * 1 identity 1 inc 5 (partial helper-1-33 7))
   )
