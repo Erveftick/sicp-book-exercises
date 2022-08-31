@@ -1374,7 +1374,9 @@
 
 ; 1.39
 
-(defn nth-odd [n]
+(defn nth-odd
+  "Функция которая дает n-ое нечетное число начиная с 1"
+  [n]
   (dec (* 2 n)))
 
 (defn tan-cf [x k]
@@ -1393,7 +1395,6 @@
   (double (/ x (tan-cf-helper 1))))
 
 (comment
-  (Math/PI)
-  (/ (Math/PI) 6)
-  (tan-cf (/ (Math/PI) 6) 30)
+  (tan-cf (/ (Math/PI) 6) 30)                               ; => 0.5773502691896257
+  (tan-cf (/ (Math/PI) 2) 30)                               ; => Error
   )
