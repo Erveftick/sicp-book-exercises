@@ -1249,3 +1249,108 @@
   "б:"
   (filtered-accumulate * 1 identity 1 inc 5 (partial helper-1-33 7))
   )
+
+; 1.34
+
+(defn f [g]
+  (g 2))
+
+(comment
+  (f square)
+
+  "Ответ: если мы вызовем следующее выражение"
+  (f f)
+  "то при первом подсчете мы будем иметь ответ 2.
+  Далее мы снова вызываем функцию f, но на этот
+  раз, аргументом будет не f, а число 2, то есть:"
+  (f 2)
+  "что привёдет к такой записи в теле фукнции при
+  подсчёте"
+  (2 2)
+  "что является недопустимым в языке и имеем ошибку:
+
+  Execution error (ClassCastException) at
+  sicp-book-exercises.core/f (core.clj:1256).
+  class java.lang.Long cannot be cast to class
+  clojure.lang.IFn (java.lang.Long is in module
+  java.base of loader 'bootstrap'; clojure.lang.IFn
+  is in unnamed module of loader 'app')"
+  )
+
+; 1.35
+
+(def tolerance 0.00001)
+(defn fixed-point [f first-guess]
+  (defn close-enough? [v1 v2]
+    (< (Math/abs (- v1 v2)) tolerance))
+  (defn try-fixed-point [guess]
+    (let [next (f guess)]
+      (if (close-enough? guess next)
+        next
+        (try-fixed-point next))))
+  (try-fixed-point first-guess))
+
+(comment
+  (fixed-point #(+ 1 (/ 1 %)) 1.0)                          ; => 1.6180327868852458
+  fi)                                                       ; => 1.618033988749895
+
+; 1.36
+
+(def atom:calc-counter (atom 0))
+
+(defn fixed-point-1-36 [f first-guess]
+  (reset! atom:calc-counter 0)
+  (defn close-enough-1-36? [v1 v2]
+    (println {:v1 v1 :v2 v2})
+    (swap! atom:calc-counter inc)
+    (< (Math/abs (- v1 v2)) tolerance))
+  (defn try-fixed-point-1-36 [guess]
+    (let [next (f guess)]
+      (if (close-enough-1-36? guess next)
+        next
+        (try-fixed-point-1-36 next))))
+  (try-fixed-point-1-36 first-guess))
+
+(comment
+  (fixed-point-1-36 #(/ (Math/log 1000) (Math/log %)) 1.2)  ; => 4.555531964899801
+  "На просчёт этой функции без использования торможения
+  усреднения уходит 36 приближений (начиная с числа 1.2)"
+
+  (fixed-point-1-36 #(average % (/ (Math/log 1000) (Math/log %))) 1.2) ; => 4.555536383770095
+  "На просчёт этой функции c использованием торможения
+  усреднения уходит 12 приближений (начиная с числа 1.2)"
+  @atom:calc-counter
+  )
+
+; 1.37
+
+(defn cont-frac [n d k]
+  (defn cont-frac-iter [i result]
+    (if (= i 0)
+      result
+      (cont-frac-iter (dec i) (/ (n i) (+ (d i) result)))))
+  (cont-frac-iter k 0))
+
+(defn cont-frac-rec [n d k]
+  (defn cont-frac-helper [i]
+    (if (> i k)
+      1
+      (/ (n i) (+ (d i) (cont-frac-helper (inc i))))))
+  (cont-frac-helper 1))
+
+(comment
+  "a:"
+  (cont-frac-rec
+    (fn [i] 1.0)
+    (fn [i] 1.0)
+    10)
+  (cont-frac
+    (fn [i] 1.0)
+    (fn [i] 1.0)
+    11)
+  (/ 1 fi)
+
+  "Пришлось взять число k = 10 для рекурсивного, и
+  k = 11 для итеративного"
+  )
+
