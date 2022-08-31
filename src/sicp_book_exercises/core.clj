@@ -1340,17 +1340,60 @@
 
 (comment
   "a:"
-  (cont-frac-rec
-    (fn [i] 1.0)
-    (fn [i] 1.0)
-    10)
   (cont-frac
     (fn [i] 1.0)
     (fn [i] 1.0)
     11)
   (/ 1 fi)
 
+  "б:"
+  (cont-frac-rec
+    (fn [i] 1.0)
+    (fn [i] 1.0)
+    10)
+
   "Пришлось взять число k = 10 для рекурсивного, и
   k = 11 для итеративного"
   )
 
+; 1.38
+
+(defn eiler-fn [k]
+  (+ (cont-frac-rec
+       (fn [i] 1.0)
+       (fn [i]
+         (if (= (mod i 3) 2)
+           (/ (inc i) 1.5)
+           1))
+       k)
+     2))
+
+(comment
+  (eiler-fn 10)                                             ; => 2.718282368249837
+  )
+
+; 1.39
+
+(defn nth-odd [n]
+  (dec (* 2 n)))
+
+(defn tan-cf [x k]
+  (defn tan-cf-iter [i result]
+    (if (= i 0)
+      result
+      (tan-cf-iter (dec i) (- (nth-odd i) (/ (square x) result)))))
+  (double (/ x (tan-cf-iter k 1))))
+
+; Такая же функция, только другим методом
+#_(defn tan-cf [x k]
+  (defn tan-cf-helper [i]
+    (if (> i k)
+      1
+      (- (nth-odd i) (/ (square x) (tan-cf-helper (inc i))))))
+  (double (/ x (tan-cf-helper 1))))
+
+(comment
+  (Math/PI)
+  (/ (Math/PI) 6)
+  (tan-cf (/ (Math/PI) 6) 30)
+  )
