@@ -1,7 +1,7 @@
 # sicp-book-exercises
 
 Project where I store my exercises solutions of 
-SICP[https://newstar.rinet.ru/~goga/sicp/sicp.pdf] book.
+[SICP](https://newstar.rinet.ru/~goga/sicp/sicp.pdf) book.
 This repository uses Clojure as main programming
 language instead of Schema, that described in the book.
 Sometimes different functions might have different names
@@ -22,7 +22,7 @@ you want
 ## Graphs
 
 For some tasks I wanted to show the result using graphs or
-another diagram. For this I used oz[https://github.com/metasoarous/oz]
+another diagram. For this I used [oz](https://github.com/metasoarous/oz)
 library. In the comment section I give you commands for
 starting this if you need it.
 
