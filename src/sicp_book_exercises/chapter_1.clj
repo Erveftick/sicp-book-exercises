@@ -8,7 +8,7 @@
       :author       "Edward Kvashyn"
       :date-created "2021-11-25"
       :date-ended   "2022-09-02"}
-  sicp-book-exercises.chapter1
+  sicp-book-exercises.chapter-1
   (:gen-class)
   (:require [oz.core :as oz]))
 
@@ -764,7 +764,7 @@
   по каким правилам работает интерпретатор. В качестве примера
   рассмотрим итеративную процедуру gcd, приведенную выше."
   [a b]
-  (println {:a a :b b})
+  #_(println {:a a :b b})
   (if (= b 0)
     a
     (gcd b (mod a b))))
