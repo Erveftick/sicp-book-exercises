@@ -191,3 +191,35 @@
  (((plus two one) inc) 0) ; => 3
  ; Задание выполнено. Но делать его было отвратительно...🤮
  )
+
+;;;;; 2.7
+; Schema
+;(define (make-interval a b) (cons a b))
+
+; Clojure
+(defn make-interval [a b] (list a b))
+(defn upper-bound [[a b]] (max a b))
+(defn lower-bound [[a b]] (min a b))
+
+;;;;; 2.8
+
+(defn sub-interval [x y]
+  (let [low-pair  [(lower-bound x) (lower-bound y)]
+        high-pair [(upper-bound x) (upper-bound y)]
+        minus     #(- (apply max %) (apply min %))]
+    (make-interval (minus low-pair) (minus high-pair))))
+
+(comment
+ (sub-interval [1 2] [3 4]) ; => (2 2)
+ )
+
+;;;;; 2.9
+
+; TODO: end this exercise
+
+(defn interval-radius [x]
+  (/ (- (upper-bound x) (lower-bound x)) 2))
+
+(comment
+ (interval-radius [2 5])
+ )
